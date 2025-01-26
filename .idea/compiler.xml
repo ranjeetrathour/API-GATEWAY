@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="api-gateway" target="17" />
+      <module name="api-gateway.main" target="17" />
+      <module name="api-gateway.test" target="17" />
+      <module name="book-service" target="17" />
+      <module name="book-service.main" target="17" />
+      <module name="book-service.test" target="17" />
+      <module name="loan-service" target="17" />
+      <module name="loan-service.main" target="17" />
+      <module name="loan-service.test" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
