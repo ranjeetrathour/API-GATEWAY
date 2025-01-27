@@ -16,13 +16,17 @@ public class ApiGatewayApplication {
 
 }
 
-//@Configuration
-//class GatewayConfiguration {
-//	@Bean
-//	public RouteLocator routeLocator(RouteLocatorBuilder builder) {
-//		return builder.routes()
-//				.route("book-service", r -> r.path("/books/**") // Path predicate
-//						.uri("http://localhost:8081")) // Destination URI
-//				.build();
-//	}
-//}
+@Configuration
+class GatewayConfiguration {
+	@Bean
+	public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+		return builder.routes()
+				.route("book-service", r -> r.path("/books/**") // Path predicate
+						.uri("http://localhost:8081")) // Destination URI
+				.route("author-service", r -> r.path("/authors/**")
+						.uri("http://localhost:8081")) // Path predicate)
+				.route("loan-service", r -> r.path("/loans/**")
+						.uri("http://localhost:8082"))
+				.build();
+	}
+}
