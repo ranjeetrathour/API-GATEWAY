@@ -2,13 +2,10 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.server.ServerWebExchange;
 
 @SpringBootApplication
 public class ApiGatewayApplication {
@@ -32,7 +29,9 @@ class GatewayConfiguration {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("book-service", r -> r.path("/books/**") // Path predicate
-                        .filters(f -> f.filter(new CountryNameAddFilter().apply(new CountryNameAddFilter.Config()))) // Apply custom filter
+                        .filters(f -> f.filter(new IpWiseRateLimiter().apply(new IpWiseRateLimiter.Config()))
+                                .filter(new CountryNameAddFilter().apply(new CountryNameAddFilter.Config()))
+                        ) // Apply custom filter
                         .uri("http://localhost:8081")) // Destination URI
                 .route("author-service", r -> r.path("/authors/**")
                         .uri("http://localhost:8081")) // Path predicate

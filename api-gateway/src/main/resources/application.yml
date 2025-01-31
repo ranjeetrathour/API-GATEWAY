@@ -13,6 +13,7 @@ server:
           predicates:
             - Path=/books/**
           filters:
+            - name: IpWiseRateLimiter
             - name: CountryNameAddFilter
 
         - id: author-service
