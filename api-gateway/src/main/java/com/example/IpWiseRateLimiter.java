@@ -36,7 +36,12 @@ public class IpWiseRateLimiter extends AbstractGatewayFilterFactory<IpWiseRateLi
             public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
                 String ip = exchange.getRequest().getLocalAddress().getAddress().toString().substring(1, exchange.getRequest().getLocalAddress().getAddress().toString().length() - 1);
                 Bucket bucket = cache.computeIfAbsent(ip, k -> createBucket());
+                if (bucket.getAvailableTokens()==0){
+                    exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
+                    return exchange.getResponse().setComplete();
+                }
                 if (bucket.tryConsume(1)) {
+                    System.out.println(bucket.getAvailableTokens());
                     return chain.filter(exchange);
                 } else if (bucket.getAvailableTokens() < 1) {
                     exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
@@ -50,7 +55,7 @@ public class IpWiseRateLimiter extends AbstractGatewayFilterFactory<IpWiseRateLi
 
     private Bucket createBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(REQUEST_LIMIT, Refill.greedy(REQUEST_LIMIT, TIME_WINDOW)))
+                .addLimit(Bandwidth.classic(REQUEST_LIMIT, Refill.intervally(REQUEST_LIMIT, TIME_WINDOW)))
                 .build();
     }
 
